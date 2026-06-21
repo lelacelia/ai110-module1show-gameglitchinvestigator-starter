@@ -19,8 +19,9 @@ def parse_guess(raw: str):
         return False, None, "Enter a guess."
 
     try:
+        # FIX: Bug #3 allows float inputs by rounding them DOWN to the nearest integer instead of ROUNDING them.
         if "." in raw:
-            value = int(float(raw))
+            value = round(float(raw)) # <- Bug 3 Fix: round instead of floor, change int() to round()
         else:
             value = int(raw)
     except Exception:
@@ -32,24 +33,33 @@ def parse_guess(raw: str):
 def check_guess(guess, secret):
     if guess == secret:
         return "Win", "🎉 Correct!"
+    # FIX: Bug #2 hints are reversed incorrectly, fixed below.
+   
+    # BUGGY CODE (commented out - try/except no longer needed since Bug #6 is fixed, secret is always integer):
+    # try:
+    #     if guess > secret:
+    #         return "Too High", "📈 Go LOWER!" # <- Bug 2 Fix: HIGHER becomes LOWER
+    #     else:
+    #         return "Too Low", "📉 Go HIGHER!" # <- Bug 2 Fix: LOWER becomes HIGHER
+    # except TypeError:
+    #     g = str(guess)
+    #     if g == secret:
+    #         return "Win", "🎉 Correct!"
+    #     if g > secret:
+    #         return "Too High", "📈 Go LOWER!" # <- Bug 2 Fix: HIGHER becomes LOWER
+    #     return "Too Low", "📉 Go HIGHER!" # <- Bug 2 Fix: LOWER becomes HIGHER
 
-    try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
-        else:
-            return "Too Low", "📉 Go LOWER!"
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+    if guess > secret:
+        return "Too High", "📈 Go LOWER!" # <---- Bug 2 Fix: HIGHER becomes LOWER
+    else:
+        return "Too Low", "📉 Go HIGHER!"#  <---- Bug 2 Fix: LOWER becomes HIGHER
+    
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
     if outcome == "Win":
-        points = 100 - 10 * (attempt_number + 1)
+        #FIX: Bug #7 maximum score is 80 but should be 100.
+        points = 100 - 10 * (attempt_number - 1) # <--- changed (attempt_number + 1) to (attempt_number - 1) to allow max 100 on first attempt
         if points < 10:
             points = 10
         return current_score + points
@@ -91,9 +101,10 @@ st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
-
+# FIX: Bug #1 Attempts left are 1 lower than supposed to be at the start
+# i.e. Attempts left at the start is 7 instead of 8 at the Normal level.
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0 # <- fix bug 1 from 1 to 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -105,10 +116,15 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 st.subheader("Make a guess")
+#FIX: Bug #4 guess range is incorrectly displayed as 1-100 for all difficulty levels.
+#FIX: Bug #8 attempts left count in Info lags by 1 - check if guess is pending submission.
+attempts_left = attempt_limit - st.session_state.attempts
+if st.session_state.get(f"guess_input_{difficulty}"):  # If there's a guess in the input, it's about to be submitted
+    attempts_left -= 1
 
 st.info(
-    f"Guess a number between 1 and 100. "
-    f"Attempts left: {attempt_limit - st.session_state.attempts}"
+    f"Guess a number between {low} and {high}. " # <--- change 1 to low and 100 to high, as specifed above low, high = get_range_for_difficulty(difficulty)
+    f"Attempts left: {attempts_left}"
 )
 
 with st.expander("Developer Debug Info"):
@@ -133,7 +149,13 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    #FIX: Bug #5 New Game button does not restart the game because status is not reset to "playing".
+    st.session_state.status = "playing" # <--- reset status so the game doesn't immediately show win/loss message
+    #FIX: Bug #9 history is retained and carried over after New Game is selected.
+    st.session_state.history = [] # <- Bug 9 Fix: Clear history for new game
+    #FIX: Bug #4 guess range is incorrectly displayed as 1-100 for all difficulty levels.
+    st.session_state.secret = random.randint(low, high) # <--- change 1 to low and 100 to high, as specifed above low, high = get_range_for_difficulty(difficulty)
+
     st.success("New game started.")
     st.rerun()
 
@@ -155,10 +177,13 @@ if submit:
     else:
         st.session_state.history.append(guess_int)
 
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
+        #FIX: Bug #6 secret number is converted to a string on even attempts causing type mismatch.
+        # BUGGY CODE (commented out):
+        # if st.session_state.attempts % 2 == 0:
+        #     secret = str(st.session_state.secret)
+        # else:
+        #     secret = st.session_state.secret
+        secret = st.session_state.secret # <--- always keep secret as integer
 
         outcome, message = check_guess(guess_int, secret)
 
