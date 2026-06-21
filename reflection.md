@@ -16,13 +16,17 @@ The Game's Difficulty level is Normal, Range: 1 to 100, Attempts allowed: 8. In 
   
   **Bug #3:** Decimal numbers always get rounded down. The system rounded down the number first, recorded the rounded down number in the History list and compared that rounded down number with the secret.
   
-  **Bug #4:** The game announcement is always "Guess a number between 1 and 100" regardless of what difficulty level is selected.
+  **Bug #4:** The game announcement is always "Guess a number between 1 and 100" regardless of what difficulty level is selected. Also, the secret's range is fixed at 1-100
+
+  **Bug #5:"** New Game button does not restart the game
   
-  **Bug #5:** The secret number is converted to a string on even-numbered attempts, but in odd attempts, it remains an integer. On odd attempts the game works correctly, but on even attempts it yields incorrect results.
+  **Bug #6:** The secret number is converted to a string on even-numbered attempts, but in odd attempts, it remains an integer. On odd attempts the game works correctly, but on even attempts it yields incorrect results.
   
-  **Bug #6:** Maximum score is 80, but it should be 100.
+  **Bug #7:** Maximum score is 80, but it should be 100.
   
-  **Bug #7:** After bug #1 is fixed, count of attempts left still lags by 1 in the info section, even though it is still correctly recorded in the system.
+  **Bug #8:** After bug #1 is fixed, count of attempts left still lags by 1 in the info section, even though it is still correctly recorded in the system.
+
+  **Bug 9:** In the Developer Debug Info, history is retained and carried over after New Game is selected
 
 **Bug Reproduction Log**
 
