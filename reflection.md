@@ -51,16 +51,39 @@ Claude Haiku 4.5
 I asked Claude Haiku about Bug #1 (attempts left showing 7 instead of 8). Claude explained the problem and pointed me to line 96 of app.py where the issue was. I implemented the fix Claude suggested and refreshed the page to test. After the fix, I verified that at Normal level, Attempts left shows 8; at Easy level, it shows 6; and at Hard level, it shows 5 - all correct.
 
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
-[Please add your example here]
+I asked AI to fix bug #8 for me, which is about the incorrect attempt left displayed in the game info. It gave me some suggestions but still too complicated, so I asked for a simpler solution. It gave me this suggestion:
+
+    Just use the history length instead of the attempts counter:
+
+    st.info(
+        f"Guess a number between {low} and {high}. "
+        f"Attempts left: {attempt_limit - len(st.session_state.history)}"
+    )
+    Since the history is updated with every guess submission, it's always accurate and doesn't have the lag issue. No state tracking needed, no moving code around.
+
+I was not sure if it is gonna work, but I still accepted this edit. I ran the game again, test played it, attempt left still remained 8 after the first wrong guess. I asked AI again, and it admitted that using history length does not solve this issue completely because history is also only updated after the display runs. 
 
 ---
 
 ## 3. Debugging and testing your fixes
 
 - How did you decide whether a bug was really fixed?
+I manually test-played three to four times. I also asked AI to build test cases, ran pytest, and point out any possible loop holes.
+
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
+
+**Test 1: `test_parse_guess_float_rounds_correctly`**
+This pytest verified that Bug #3 was fixed. When a user enters "42.7", the game now correctly rounds it to 43 (not floors it to 42). This test was crucial because it showed that float inputs are now treated fairly—users expect standard rounding behavior, not flooring. Without this test, the rounding bug could easily return if someone refactors the code later.
+
+**Test 2: `test_update_score_first_attempt_win_max_points`**
+This pytest demonstrated that Bug #7 was fixed. Winning on the first attempt now awards 100 points (the maximum), not 80 as the buggy code did. This test revealed that the scoring formula was using `(attempt_number + 1)` instead of `(attempt_number - 1)`. It ensures the game properly rewards perfect plays and prevents score ceiling bugs from reappearing in future updates.
+
+
 - Did AI help you design or understand any tests? How?
+AI helped me understand that the original tests on the test_game_logic.py has issues, i.e. the result of check_guess function should be tuples, so all three tests test_winning_guess, test_guess_too_high, test_guess_too_low should be revised.
+
+AI helped me designed all tests about the bugs I fixed and even generated edgecase tests (as noted on the test_game_logic.py). I asked AI if there is any test that overlaps/is redundant, so I eliminated 1 AI-generated test in my final submission.
 
 ---
 

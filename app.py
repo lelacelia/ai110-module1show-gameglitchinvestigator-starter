@@ -1,78 +1,6 @@
 import random
 import streamlit as st
-
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
-        return 1, 50
-    return 1, 100
-
-
-def parse_guess(raw: str):
-    if raw is None:
-        return False, None, "Enter a guess."
-
-    if raw == "":
-        return False, None, "Enter a guess."
-
-    try:
-        # FIX: Bug #3 allows float inputs by rounding them DOWN to the nearest integer instead of ROUNDING them.
-        if "." in raw:
-            value = round(float(raw)) # <- Bug 3 Fix: round instead of floor, change int() to round()
-        else:
-            value = int(raw)
-    except Exception:
-        return False, None, "That is not a number."
-
-    return True, value, None
-
-
-def check_guess(guess, secret):
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-    # FIX: Bug #2 hints are reversed incorrectly, fixed below.
-   
-    # BUGGY CODE (commented out - try/except no longer needed since Bug #6 is fixed, secret is always integer):
-    # try:
-    #     if guess > secret:
-    #         return "Too High", "📈 Go LOWER!" # <- Bug 2 Fix: HIGHER becomes LOWER
-    #     else:
-    #         return "Too Low", "📉 Go HIGHER!" # <- Bug 2 Fix: LOWER becomes HIGHER
-    # except TypeError:
-    #     g = str(guess)
-    #     if g == secret:
-    #         return "Win", "🎉 Correct!"
-    #     if g > secret:
-    #         return "Too High", "📈 Go LOWER!" # <- Bug 2 Fix: HIGHER becomes LOWER
-    #     return "Too Low", "📉 Go HIGHER!" # <- Bug 2 Fix: LOWER becomes HIGHER
-
-    if guess > secret:
-        return "Too High", "📈 Go LOWER!" # <---- Bug 2 Fix: HIGHER becomes LOWER
-    else:
-        return "Too Low", "📉 Go HIGHER!"#  <---- Bug 2 Fix: LOWER becomes HIGHER
-    
-
-
-def update_score(current_score: int, outcome: str, attempt_number: int):
-    if outcome == "Win":
-        #FIX: Bug #7 maximum score is 80 but should be 100.
-        points = 100 - 10 * (attempt_number - 1) # <--- changed (attempt_number + 1) to (attempt_number - 1) to allow max 100 on first attempt
-        if points < 10:
-            points = 10
-        return current_score + points
-
-    if outcome == "Too High":
-        if attempt_number % 2 == 0:
-            return current_score + 5
-        return current_score - 5
-
-    if outcome == "Too Low":
-        return current_score - 5
-
-    return current_score
+from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
@@ -152,7 +80,7 @@ if new_game:
     #FIX: Bug #5 New Game button does not restart the game because status is not reset to "playing".
     st.session_state.status = "playing" # <--- reset status so the game doesn't immediately show win/loss message
     #FIX: Bug #9 history is retained and carried over after New Game is selected.
-    st.session_state.history = [] # <- Bug 9 Fix: Clear history for new game
+    st.session_state.history = [] # <--- clear history for new game
     #FIX: Bug #4 guess range is incorrectly displayed as 1-100 for all difficulty levels.
     st.session_state.secret = random.randint(low, high) # <--- change 1 to low and 100 to high, as specifed above low, high = get_range_for_difficulty(difficulty)
 
