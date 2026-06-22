@@ -36,6 +36,8 @@ This summary was put together with the help of AI agent.
 
 ### Detailed Bug Fixes with Code References
 
+> **Note:** Code locations and references below refer to the original broken version of the files. The current version has been refactored and optimized, so line numbers and file structures may differ from what is listed in this table.
+
 | Bug | Issue | Code Fix | Location |
 |-----|-------|----------|----------|
 | **Bug #1** | Attempts left showed 7 instead of 8 at Normal level | Changed `st.session_state.attempts = 1` to `st.session_state.attempts = 0` so the counter starts at 0 instead of 1 | [app.py:35](app.py#L35) |
