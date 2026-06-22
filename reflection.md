@@ -45,7 +45,7 @@ Document at least 3 bugs you found. Add rows as needed.
 ## 2. How did you use AI as a teammate?
 
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-Claude Haiku 4.5
+Claude Haiku 4.5 . AI helped me fixed the bugs I pointed out (bug 1, 2, 3, and 5) AI pointed out the remaining bugs for me. AI helped me note the edits and write comments for git commits.
 
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 I asked Claude Haiku about Bug #1 (attempts left showing 7 instead of 8). Claude explained the problem and pointed me to line 96 of app.py where the issue was. I implemented the fix Claude suggested and refreshed the page to test. After the fix, I verified that at Normal level, Attempts left shows 8; at Easy level, it shows 6; and at Hard level, it shows 5 - all correct.
@@ -91,11 +91,28 @@ AI helped me designed all tests about the bugs I fixed and even generated edgeca
 
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 
+Streamlit is used to build interactive, data-driven web-based dashboards and applications. Some people use it as an interactive front-end to test if their Python code works.
+
+**Reruns**: Streamlit reruns the entire script from top to bottom every time a user interacts with the app (clicking a button, entering text, moving a slider, etc.). This is different from traditional web apps where only the specific function handling that interaction runs. The constant rerunning makes the app feel responsive and interactive—as if it's updating in real-time.
+
+**Session State**: The challenge with reruns is that variables reset each time the script runs, so the app would "forget" everything. Session state is Streamlit's way of remembering things between reruns. Without session state, user input would disappear every time they clicked a button, making the app unusable. 
+
+In app.py file, I noticed session_state was used. session_state is an attribute of the Streamlit module. This is a dictionary-like object that stores data specific to each user's session. Every time the script reruns, the values you stored in st.session_state persist, meaning they don't reset like regular Python variables would.
+
 ---
 
 ## 5. Looking ahead: your developer habits
 
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
   - This could be a testing habit, a prompting strategy, or a way you used Git.
+I will commit to Git more frequently, i.e. at the end of any major stages in my project, and add a note on what were done in that stage. This project showed me that I can prompt AI to write me a note summarizing changes between commits and help me commit to Github, which is very helpful.
+
 - What is one thing you would do differently next time you work with AI on a coding task?
+Ask AI to write notes next to all changes made by AI. Even though I did review and approve the change before AI proceeded, sometimes it was still hard to follow and recall. I tended to forget the changes that AI made very quickly. 
+
+
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+
+AI generated codes can be inefficient and redundant, sometimes inaccurate - I used to just blindly accept whatevery AI recommended. However, redundant codes can be costly in real life. Now I realize AI's codes should be carefully supervised and optimized. 
+
+

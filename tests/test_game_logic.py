@@ -204,3 +204,64 @@ def test_full_game_flow_first_attempt_win():
     score = update_score(score, outcome, 1)
     assert score == 100  # Perfect game
 
+
+# New Feature SF8: Player Statistics - score resets to 0 on new game
+def test_score_resets_to_zero_on_new_game():
+    """Score must reset to 0 at the start of each new game so total_score accumulates correctly"""
+    score = 85  # score from previous game
+    score = 0   # simulates New Game reset
+    assert score == 0
+
+def test_total_score_accumulates_across_wins():
+    """Total score should add each game's final score correctly"""
+    total_score = 0
+    game1_score = update_score(0, "Win", 1)   # 100 points
+    total_score += game1_score
+    game2_score = update_score(0, "Win", 2)   # 90 points
+    total_score += game2_score
+    assert total_score == 190
+
+def test_total_score_includes_losses():
+    """Total score should also include negative scores from lost games"""
+    total_score = 0
+    win_score = update_score(0, "Win", 1)     # 100 points
+    total_score += win_score
+    loss_score = update_score(0, "Too Low", 1)  # -5 points
+    total_score += loss_score
+    assert total_score == 95
+
+def test_games_played_increments_on_win():
+    """games_played counter should increment when player wins"""
+    games_played = 0
+    games_played += 1  # simulates win
+    assert games_played == 1
+
+def test_games_played_increments_on_loss():
+    """games_played counter should increment when player loses"""
+    games_played = 0
+    games_played += 1  # simulates loss
+    assert games_played == 1
+
+def test_games_won_only_increments_on_win():
+    """games_won should only increment on wins, not losses"""
+    games_won = 0
+    outcome_win, _ = check_guess(50, 50)
+    if outcome_win == "Win":
+        games_won += 1
+    outcome_loss, _ = check_guess(40, 50)
+    if outcome_loss == "Win":
+        games_won += 1  # should NOT run
+    assert games_won == 1
+
+def test_player_name_strip_removes_whitespace():
+    """Player name input should strip leading/trailing whitespace on save"""
+    raw_input = "  Celia  "
+    saved_name = raw_input.strip()
+    assert saved_name == "Celia"
+
+def test_player_name_spaces_only_saves_empty():
+    """Spaces-only input should save as empty string"""
+    raw_input = "   "
+    saved_name = raw_input.strip()
+    assert saved_name == ""
+

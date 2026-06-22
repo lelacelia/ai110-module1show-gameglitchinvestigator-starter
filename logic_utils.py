@@ -1,4 +1,4 @@
-# Refactored from app.py - Reviewed and approved by user before implementation
+# Refactored from app.py by Claude Code - Reviewed and approved by user before implementation
 def get_range_for_difficulty(difficulty: str):
     """Return (low, high) inclusive range for a given difficulty."""
     if difficulty == "Easy":
@@ -10,7 +10,7 @@ def get_range_for_difficulty(difficulty: str):
     return 1, 100
 
 
-# Refactored from app.py - All Bug #3 comments preserved during collaboration with user
+# Refactored from app.py by Claude Code - All Bug #3 comments preserved during collaboration with user
 def parse_guess(raw: str):
     """
     Parse user input into an int guess.
@@ -35,7 +35,7 @@ def parse_guess(raw: str):
     return True, value, None
 
 
-# Refactored from app.py - All Bug #2 comments and commented-out buggy code preserved with user approval
+# Refactored from app.py by Claude Code - All Bug #2 comments and commented-out buggy code preserved with user approval
 def check_guess(guess, secret):
     """
     Compare guess to secret and return (outcome, message).
@@ -66,7 +66,7 @@ def check_guess(guess, secret):
         return "Too Low", "📉 Go HIGHER!"#  <---- Bug 2 Fix: LOWER becomes HIGHER
 
 
-# Refactored from app.py - All Bug #7 comments preserved during user collaboration
+# Refactored from app.py by Claude Code - All Bug #7 comments preserved during user collaboration
 def update_score(current_score: int, outcome: str, attempt_number: int):
     """Update score based on outcome and attempt number."""
     if outcome == "Win":
