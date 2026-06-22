@@ -49,6 +49,7 @@ Because I outlined my bugs in great details in reflection.md, AI went ahead and 
 
 I also went on and as "Are there any other tests you could think of for this game? Does not have to be about the bugs I spotted?". AI's response is Boundary & Edge Cases, Score Behavior, and Game Flow. I don't need the Score Behavior but I asked AI to suggested tests for Edge Cases and Game Flow.
 
+Below are tests done before AI-interaction feature extensions:
 
 | Edge Case | Prompt Used | AI-Suggested Test | Did It Pass? | Your Reasoning |
 |-----------|-------------|-------------------|--------------|----------------|
@@ -66,19 +67,20 @@ I also went on and as "Are there any other tests you could think of for this gam
 
 **Prompt used:**
 
-```
-<!-- Paste the prompt you gave the AI -->
-```
+Review and add professional document docstrings to all functions in logic_utils.py .
 
 **Linting output before:**
 
 ```
-<!-- Paste relevant linter warnings/errors -->
+logic_utils.py:130:101: E501 line too long (128 > 100 characters)
+logic_utils.py:134:92: E501 line too long (106 > 100 characters)
+logic_utils.py:65:13: W291 trailing whitespace
+logic_utils.py:1:0: C0111 missing-module-docstring (no module docstring)
 ```
 
 **Changes applied:**
 
-<!-- Describe what you changed based on the AI's suggestions -->
+AI added a comprehensive module-level docstring at the top of logic_utils.py that explains the purpose of the module (game logic utilities for the number guessing game). The existing function docstrings were already well-documented with proper formatting, Args/Returns sections, and Examples, so minimal changes were needed. AI verified that all docstrings follow PEP 257 conventions with proper indentation and formatting. The long lines issue and trailing whitespace were minor style issues that didn't require docstring changes.
 
 ---
 
