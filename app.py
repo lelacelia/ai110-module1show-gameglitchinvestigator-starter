@@ -10,13 +10,12 @@ st.caption("An AI-generated guessing game. Something is off.")
 st.sidebar.header("Settings")
 
 # Feature Expansion SF8: Player session statistics tracker - tracks games played, won, and total score
-if "games_won" not in st.session_state:
-    st.session_state.games_won = 0
-if "total_score" not in st.session_state:
-    st.session_state.total_score = 0
-
 if "games_played" not in st.session_state:
     st.session_state.games_played = 0
+if "games_won" not in st.session_state:
+    st.session_state.games_won = 0
+if "score" not in st.session_state:
+    st.session_state.score = 0
     
 # UI Enhancement SF8: Personalizes win/loss messages with the player's registered name
 if "player_name" not in st.session_state:
@@ -51,7 +50,7 @@ st.sidebar.divider()
 st.sidebar.subheader("📊 Player's Statistics")
 st.sidebar.caption(f"Games Played: {st.session_state.games_played}")
 st.sidebar.caption(f"Games Won: {st.session_state.games_won}")
-st.sidebar.caption(f"Total Score: {st.session_state.total_score}")
+st.sidebar.caption(f"Total Score: {st.session_state.score}")
 
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
@@ -59,9 +58,6 @@ if "secret" not in st.session_state:
 # i.e. Attempts left at the start is 7 instead of 8 at the Normal level.
 if "attempts" not in st.session_state:
     st.session_state.attempts = 0 # <- fix bug 1 from 1 to 0
-
-if "score" not in st.session_state:
-    st.session_state.score = 0
 
 if "status" not in st.session_state:
     st.session_state.status = "playing"
@@ -88,7 +84,7 @@ st.info(
 with st.expander("Developer Debug Info"):
     st.write("Secret:", st.session_state.secret)
     st.write("Attempts:", st.session_state.attempts)
-    st.write("Score:", st.session_state.total_score)
+    st.write("Score:", st.session_state.score)
     st.write("Difficulty:", difficulty)
     st.write("History:", st.session_state.history)
 
@@ -113,7 +109,6 @@ if new_game:
     st.session_state.history = [] # <--- clear history for new game
     #FIX: Bug #4 guess range is incorrectly displayed as 1-100 for all difficulty levels.
     st.session_state.secret = random.randint(low, high) # <--- change 1 to low and 100 to high, as specifed above low, high = get_range_for_difficulty(difficulty)
-    st.session_state.score = 0  # reset score for the new game
     # FIX: Bug #8 increment game_count to force a new text input key, clearing leftover guess from previous game
     st.session_state.game_count += 1
     name = st.session_state.player_name
@@ -164,7 +159,6 @@ if submit:
             st.session_state.status = "won"
             st.session_state.games_played += 1
             st.session_state.games_won += 1
-            st.session_state.total_score += st.session_state.score
             name = st.session_state.player_name
             st.success(
                 f"{'🎉 ' + name + ', you' if name else 'You'} won! The secret was {st.session_state.secret}. "
@@ -174,7 +168,6 @@ if submit:
             if st.session_state.attempts >= attempt_limit:
                 st.session_state.status = "lost"
                 st.session_state.games_played += 1
-                st.session_state.total_score += st.session_state.score
                 name = st.session_state.player_name
                 st.error(
                     f"{'Sorry ' + name + ', you' if name else 'You'} ran out of attempts! "

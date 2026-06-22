@@ -95,3 +95,8 @@ I included edge tests as well in the test_result.txt file. 28 tests before new f
 ## 🚀 Stretch Features
 
 - [ ] [If you choose to complete Challenge 4, describe the Enhanced UI changes here — a screenshot is optional]
+1. **UI Enhancement** — Add a player name input to the sidebar with a 💾 Save button and confirmation message. Personalize all win/loss/new-game messages throughout the app with the player's name.
+
+2. **Feature Extension** — Add a Player's Statistics section in the sidebar that tracks and displays the current session's Games Played, Games Won, and Total Score. Stats update on every game end (win or loss) and reset to 0 on New Game.
+
+![UI and Feature Enhancements](UI%20and%20Feature%20Enhancements.png)
